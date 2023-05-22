@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Tic Tac Toe Game </title>
+  <style>
+    .board {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+      width: 300px;
+      height: 300px;
+    }
+
+    .cell {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 40px;
+      background-color: lightgray;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="board"></div>
+
+  <script>
+    const board = document.querySelector('.board');
+    let currentPlayer = 'X';
+    let cells = [];
+
+    function createBoard() {
+      for (let i = 0; i < 9; i++) {
+        const cell = document.createElement('div');
+        cell.classList.add('cell');
+        cell.addEventListener('click', () => handleMove(i));
+        board.appendChild(cell);
+        cells.push('');
+      }
+    }
+
+    function handleMove(index) {
+      if (cells[index] === '') {
+        cells[index] = currentPlayer;
+        event.target.textContent = currentPlayer;
+
+        if (checkWin()) {
+          alert(currentPlayer + ' wins!');
+          resetBoard();
+          return;
+        }
+
+        if (checkDraw()) {
+          alert('It\'s a draw!');
+          resetBoard();
+          return;
+        }
+
+        currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+      }
+    }
+
+    function checkWin() {
+      const winningConditions = [
+        [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rows
+        [0, 3, 6], [1, 4, 7], [2, 5, 8], // Columns
+        [0, 4, 8], [2, 4, 6]             // Diagonals
+      ];
+
+      for (let condition of winningConditions) {
+        const [a, b, c] = condition;
+        if (cells[a] !== '' && cells[a] === cells[b] && cells[a] === cells[c]) {
+          return true;
+        }
+      }
+
+      return false;
+    }
+
+    function checkDraw() {
+      return cells.every(cell => cell !== '');
+    }
+
+    function resetBoard() {
+      board.innerHTML = '';
+      cells = [];
+      currentPlayer = 'X';
+      createBoard();
+    }
+
+    createBoard();
+  </script>
+</body>
+</html>
